@@ -18,7 +18,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect(process.env.NODE_ENV === 'production' ? process.env.MONGO_URI : 'mongodb://localhost:27017/moviedb');
+mongoose.connect(process.env.NODE_ENV === 'production' ? process.env.MONGO_URI : 'mongodb://localhost:27017/moviesdb');
 
 app.use(requestLogger);
 app.use(cors());
@@ -43,10 +43,7 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandle);
 
-app.listen(process.env.NODE_ENV === 'production' ? process.env.PORT : '3000', () => {
-  // eslint-disable-next-line no-console
-  console.log(`App listening on port ${process.env.NODE_ENV === 'production' ? process.env.PORT : '3000'}`);
-});
+app.listen(process.env.NODE_ENV === 'production' ? process.env.PORT : '3000');
 
 // ssh kudina@51.250.80.58
 // api.movies-kudina.nomoredomains.icu

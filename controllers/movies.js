@@ -4,7 +4,8 @@ const BadRequestError = require('../utils/BadRequestError');
 const ForbiddenError = require('../utils/Forbidden');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
+  const owner = req.user._id;
+  Movie.find({ owner })
     .then((movie) => res.send({ movie }))
     .catch(next);
 };
@@ -12,7 +13,7 @@ module.exports.getMovies = (req, res, next) => {
 module.exports.createMovie = (req, res, next) => {
   const {
     contry, director, duration, year, description, image,
-    trailerLink, thumbnail, nameRU, nameEN,
+    trailerLink, thumbnail, nameRU, nameEN, movieId,
   } = req.body;
 
   Movie.create({
@@ -27,6 +28,7 @@ module.exports.createMovie = (req, res, next) => {
     owner: req.user._id,
     nameRU,
     nameEN,
+    movieId,
   })
     .then((movie) => res.send({ movie }))
     .catch((err) => {
@@ -34,7 +36,7 @@ module.exports.createMovie = (req, res, next) => {
         next(new BadRequestError('Некорректные данные'));
         return;
       }
-      next();
+      next(err);
     });
 };
 

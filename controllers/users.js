@@ -36,7 +36,7 @@ module.exports.createUser = (req, res, next) => {
         return;
       }
       if (err.code === 11000) {
-        next(new ConflictError('Пользователь уже зарегестрирован'));
+        next(new ConflictError('Пользователь уже зарегистрирован'));
         return;
       }
       next(err);
@@ -46,7 +46,7 @@ module.exports.createUser = (req, res, next) => {
 module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
-    { name: req.body.name },
+    { name: req.body.name, email: req.body.email },
     { new: true, runValidators: true },
   )
     .then((user) => {
@@ -59,6 +59,10 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
+        return;
+      }
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
         return;
       }
       if (err.name === 'CastError') {
